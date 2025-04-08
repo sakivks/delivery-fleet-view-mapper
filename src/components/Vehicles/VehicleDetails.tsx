@@ -162,7 +162,7 @@ const VehicleDetails = ({
             <div className="flex justify-between text-sm text-gray-500">
               <span>{vehicle.deliveries.completed} completed</span>
               <span>
-                {vehicle.deliveries.total - vehicle.deliveries.completed}{" "}
+                {vehicle.deliveries.total - vehicle.deliveries.completed}
                 remaining
               </span>
             </div>
