@@ -39,20 +39,7 @@ export class EventService {
 
     // Check for delayed events after recording
     try {
-      const response = await fetch(
-        `${process.env.VITE_SUPABASE_URL}/functions/v1/check-delayed-events`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${process.env.VITE_SUPABASE_ANON_KEY}`,
-          },
-        }
-      );
-
-      if (!response.ok) {
-        console.error("Failed to check delayed events:", await response.text());
-      }
+      await this.checkForDelayedEvents();
     } catch (error) {
       console.error("Error checking delayed events:", error);
     }
