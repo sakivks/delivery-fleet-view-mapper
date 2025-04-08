@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Header from "@/components/Layout/Header";
 import VehicleList from "@/components/Vehicles/VehicleList";
 import DeliveryMap from "@/components/Map/DeliveryMap";
@@ -9,10 +8,16 @@ import { fetchVehicles } from "@/services/VehicleService";
 import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
-  const [selectedFilters, setSelectedFilters] = useState<VehicleStatus[]>(['active', 'paused', 'delayed', 'completed', 'maintenance']);
+  const [selectedFilters, setSelectedFilters] = useState<VehicleStatus[]>([
+    "active",
+    "paused",
+    "delayed",
+    "completed",
+    "maintenance",
+  ]);
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
   const [detailsOpen, setDetailsOpen] = useState<boolean>(false);
-  const [vehicles, setVehicles] = useState<Vehicle[]>([]); 
+  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const { toast } = useToast();
 
@@ -48,34 +53,42 @@ const Index = () => {
     setDetailsOpen(true);
   };
 
-  const filteredVehicles = vehicles.filter(v => selectedFilters.includes(v.status));
+  const filteredVehicles = vehicles.filter((v) =>
+    selectedFilters.includes(v.status)
+  );
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       <Header />
-      
-      <main className="flex-1 p-4 lg:p-6 container max-w-7xl mx-auto flex flex-col">
+
+      <main className="flex-1 p-4 lg:p-6 container mx-auto flex flex-col">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1">
           <div className="lg:col-span-1 overflow-hidden">
-            <VehicleList 
-              vehicles={vehicles}
+            <VehicleList
+              vehicles={mockVehicles}
               selectedFilters={selectedFilters}
               onFilterChange={setSelectedFilters}
               onSelectVehicle={handleSelectVehicle}
               isLoading={loading}
             />
           </div>
-          
+
           <div className="lg:col-span-2 h-[calc(100vh-8rem)]">
-            <DeliveryMap 
-              vehicles={filteredVehicles}
+            <DeliveryMap
+              vehicles={
+                selectedFilters.length > 0
+                  ? mockVehicles.filter((v) =>
+                      selectedFilters.includes(v.status)
+                    )
+                  : mockVehicles
+              }
               selectedVehicle={selectedVehicle}
               onVehicleSelect={handleSelectVehicle}
             />
           </div>
         </div>
       </main>
-      
+
       <VehicleDetails
         vehicle={selectedVehicle}
         isOpen={detailsOpen}
