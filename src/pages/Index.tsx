@@ -15,6 +15,7 @@ const Index = () => {
     "completed",
     "maintenance",
   ]);
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
   const [detailsOpen, setDetailsOpen] = useState<boolean>(false);
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
@@ -53,13 +54,16 @@ const Index = () => {
     setDetailsOpen(true);
   };
 
-  const filteredVehicles = vehicles.filter((v) =>
-    selectedFilters.includes(v.status)
+  const filteredVehicles = vehicles.filter(
+    (v) =>
+      selectedFilters.includes(v.status) &&
+      (v.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        v.id?.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      <Header />
+      <Header searchValue={searchQuery} onSearchChange={setSearchQuery} />
 
       <main className="flex-1 p-4 lg:p-6 container mx-auto flex flex-col">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1">
