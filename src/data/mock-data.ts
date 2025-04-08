@@ -1,4 +1,3 @@
-
 export type VehicleStatus = 'active' | 'paused' | 'delayed' | 'completed' | 'maintenance';
 
 export interface Vehicle {
@@ -21,6 +20,7 @@ export interface Vehicle {
   fuelLevel: number;
 }
 
+// We'll keep the mock data for now as a fallback
 export const mockVehicles: Vehicle[] = [
   {
     id: 'v1',
@@ -221,4 +221,46 @@ export const getVehicleTypeIcon = (type: string): string => {
     default:
       return 'circle';
   }
+};
+
+// Add Supabase database types mapped to our application types
+export const mapDbVehicleToAppVehicle = (
+  dbVehicle: any, 
+  driver: any = null, 
+  trip: any = null, 
+  orderCount: any = { completed: 0, total: 0 }
+): Vehicle => {
+  // Random coordinates near New York for demo purposes
+  const lat = 40.71 + (Math.random() * 0.05);
+  const lng = -74.00 + (Math.random() * 0.05);
+  
+  // Map trip status to our application status
+  let status: VehicleStatus = 'active';
+  if (trip?.status) {
+    switch (trip.status) {
+      case 'active': status = 'active'; break;
+      case 'paused': status = 'paused'; break;
+      case 'delayed': status = 'delayed'; break;
+      case 'completed': status = 'completed'; break;
+      case 'maintenance': status = 'maintenance'; break;
+      default: status = 'active';
+    }
+  }
+  
+  return {
+    id: dbVehicle.id,
+    name: dbVehicle.name || 'Unknown Vehicle',
+    driver: driver?.name || 'Unassigned',
+    status: status,
+    location: { lat, lng },
+    destination: trip?.destination || 'No active destination',
+    eta: trip?.end_time ? new Date(trip.end_time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'N/A',
+    deliveries: {
+      completed: orderCount.completed || 0,
+      total: orderCount.total || 0
+    },
+    lastUpdated: dbVehicle.updated_at ? new Date(dbVehicle.updated_at).toLocaleString() : 'Unknown',
+    vehicleType: dbVehicle.type || 'truck',
+    fuelLevel: Math.floor(Math.random() * 100)
+  };
 };
