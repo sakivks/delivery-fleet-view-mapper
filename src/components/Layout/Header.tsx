@@ -1,23 +1,28 @@
 
 import React from "react";
-import { Truck, Search } from "lucide-react";
+import { Truck, Search, Bell } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
 const Header = () => {
   return (
-    <header className="bg-blue-500 text-white py-3 px-6 flex justify-between items-center shadow-md">
-      <div className="flex items-center gap-2">
-        <Truck size={24} />
+    <header className="bg-gradient-to-r from-blue-600 to-blue-500 text-white py-4 px-6 flex justify-between items-center shadow-lg">
+      <div className="flex items-center gap-3">
+        <div className="bg-white/20 p-2 rounded-lg">
+          <Truck size={22} className="text-white" />
+        </div>
         <h1 className="text-xl font-bold">Fleet View</h1>
       </div>
       <div className="flex items-center gap-4 max-w-xs w-full">
         <div className="relative w-full">
-          <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-white/70" size={16} />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/70" size={16} />
           <Input 
-            placeholder="Search..." 
-            className="pl-8 bg-blue-600/50 border-blue-400/30 text-white placeholder:text-white/70 w-full"
+            placeholder="Search vehicles..." 
+            className="pl-9 bg-blue-700/30 border-white/20 text-white placeholder:text-white/70 w-full rounded-full focus-visible:ring-white/30 h-9"
           />
         </div>
+        <button className="bg-white/20 p-2 rounded-full hover:bg-white/30 transition-colors">
+          <Bell size={18} className="text-white" />
+        </button>
       </div>
     </header>
   );

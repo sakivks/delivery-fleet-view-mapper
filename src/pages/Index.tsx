@@ -17,12 +17,12 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-100">
+    <div className="min-h-screen flex flex-col bg-gray-50">
       <Header />
       
       <main className="flex-1 p-4 lg:p-6 container max-w-7xl mx-auto flex flex-col">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1">
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 overflow-hidden">
             <VehicleList 
               vehicles={mockVehicles}
               selectedFilters={selectedFilters}
@@ -31,7 +31,7 @@ const Index = () => {
             />
           </div>
           
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 h-[calc(100vh-8rem)]">
             <DeliveryMap 
               vehicles={
                 selectedFilters.length > 0

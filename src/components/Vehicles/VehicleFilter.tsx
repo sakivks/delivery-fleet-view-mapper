@@ -24,26 +24,26 @@ const VehicleFilter = ({ selectedFilters, onFilterChange, vehicleCounts }: Vehic
                      selectedFilters.length === 1 ? selectedFilters[0] : "all";
 
   return (
-    <div className="mb-4">
+    <div className="mb-6">
       <Tabs defaultValue={currentTab} value={currentTab} onValueChange={handleFilterChange} className="w-full">
-        <TabsList className="w-full grid grid-cols-3 h-auto p-1">
-          <TabsTrigger value="all" className="py-2 relative">
-            Planned
-            <Badge variant="outline" className="ml-2 py-0 px-1.5 h-5">{vehicleCounts.all}</Badge>
+        <TabsList className="w-full grid grid-cols-3 h-auto p-1 bg-gray-100 rounded-xl">
+          <TabsTrigger value="all" className="py-2 relative rounded-lg data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm">
+            All
+            <Badge variant="outline" className="ml-2 py-0 px-1.5 h-5 bg-white/80">{vehicleCounts.all}</Badge>
           </TabsTrigger>
-          <TabsTrigger value="active" className="py-2 relative">
-            Dispatched
-            <Badge variant="outline" className="ml-2 py-0 px-1.5 h-5">{vehicleCounts.active}</Badge>
+          <TabsTrigger value="active" className="py-2 relative rounded-lg data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm">
+            Active
+            <Badge variant="outline" className="ml-2 py-0 px-1.5 h-5 bg-white/80">{vehicleCounts.active}</Badge>
           </TabsTrigger>
-          <TabsTrigger value="completed" className="py-2 relative">
+          <TabsTrigger value="completed" className="py-2 relative rounded-lg data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm">
             Completed
-            <Badge variant="outline" className="ml-2 py-0 px-1.5 h-5">{vehicleCounts.completed}</Badge>
+            <Badge variant="outline" className="ml-2 py-0 px-1.5 h-5 bg-white/80">{vehicleCounts.completed}</Badge>
           </TabsTrigger>
         </TabsList>
       </Tabs>
       
-      <div className="mt-4 text-sm text-muted-foreground">
-        Viewing {vehicleCounts[currentTab === "all" ? "all" : currentTab]} routes
+      <div className="mt-4 text-sm text-gray-500 flex items-center">
+        <span>Viewing {vehicleCounts[currentTab === "all" ? "all" : currentTab]} vehicles</span>
       </div>
     </div>
   );
