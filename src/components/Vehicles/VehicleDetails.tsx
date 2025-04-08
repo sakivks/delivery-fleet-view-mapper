@@ -174,7 +174,7 @@ const VehicleDetails = ({
               <div className="flex justify-center font-semibold">Sequence</div>
               <div className="flex justify-end font-semibold">ETA</div>
             </div>
-            {customersETA.map((customer) => (
+            {customersETA.slice(0, vehicle.deliveries.total).map((customer) => (
               <div className="grid grid-cols-3 gap-4">
                 <div>{customer.customer}</div>
                 <div className="flex justify-center">{customer.sequence}</div>
