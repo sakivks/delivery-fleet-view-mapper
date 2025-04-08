@@ -8,6 +8,7 @@ import {
 import { Vehicle, getStatusColor, getStatusText } from "@/data/mock-data";
 import { Car, MapPin, Truck, Fuel, Clock, Package } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { Button } from "../ui/button";
 
 interface VehicleDetailsProps {
   vehicle: Vehicle | null;
@@ -167,7 +168,7 @@ const VehicleDetails = ({
             </div>
           </div>
 
-          <div className="w-full">
+          <div className="w-full pt-3">
             <div className="grid grid-cols-3 gap-4">
               <div className="font-semibold">Name</div>
               <div className="flex justify-center font-semibold">Sequence</div>
@@ -177,11 +178,14 @@ const VehicleDetails = ({
               <div className="grid grid-cols-3 gap-4">
                 <div>{customer.customer}</div>
                 <div className="flex justify-center">{customer.sequence}</div>
-                <div className="flex justify-end">{customer.customer}</div>
+                <div className="flex justify-end">{customer.eta}</div>
               </div>
             ))}
           </div>
 
+          <div className="w-full  flex justify-center items-center">
+            <Button>Resequence</Button>
+          </div>
           <div className="text-xs text-gray-400 text-right pt-2">
             Last updated: {vehicle.lastUpdated}
           </div>
