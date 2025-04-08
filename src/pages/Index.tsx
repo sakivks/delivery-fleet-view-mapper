@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Header from "@/components/Layout/Header";
 import VehicleList from "@/components/Vehicles/VehicleList";
 import DeliveryMap from "@/components/Map/DeliveryMap";
@@ -65,7 +65,7 @@ const Index = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1">
           <div className="lg:col-span-1 overflow-hidden">
             <VehicleList
-              vehicles={mockVehicles}
+              vehicles={vehicles}
               selectedFilters={selectedFilters}
               onFilterChange={setSelectedFilters}
               onSelectVehicle={handleSelectVehicle}
@@ -75,13 +75,7 @@ const Index = () => {
 
           <div className="lg:col-span-2 h-[calc(100vh-8rem)]">
             <DeliveryMap
-              vehicles={
-                selectedFilters.length > 0
-                  ? mockVehicles.filter((v) =>
-                      selectedFilters.includes(v.status)
-                    )
-                  : mockVehicles
-              }
+              vehicles={filteredVehicles}
               selectedVehicle={selectedVehicle}
               onVehicleSelect={handleSelectVehicle}
             />
