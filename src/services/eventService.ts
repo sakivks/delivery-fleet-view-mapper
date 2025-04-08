@@ -200,33 +200,4 @@ export class EventService {
       throw error;
     }
   }
-
-  static async initializePlannedEvents() {
-    const events = [
-      { name: "GATE_IN", sequence: 1, time: 0 },
-      { name: "DOCK_IN", sequence: 2, time: 30 },
-      { name: "LOADING", sequence: 3, time: 120 },
-      { name: "DOCK_OUT", sequence: 4, time: 15 },
-      { name: "GATE_OUT", sequence: 5, time: 15 },
-    ];
-
-    // First, clear existing planned events
-    const { error: deleteError } = await supabase
-      .from("planned_schedule")
-      .delete()
-      .neq("id", 0); // Delete all records
-
-    if (deleteError) throw deleteError;
-
-    // Insert new planned events
-    for (const event of events) {
-      const { error: insertError } = await supabase
-        .from("planned_schedule")
-        .insert([event]);
-
-      if (insertError) throw insertError;
-    }
-
-    console.log("Planned events initialized successfully");
-  }
 }
