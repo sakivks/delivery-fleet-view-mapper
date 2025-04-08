@@ -7,7 +7,7 @@ import VehicleDetails from "@/components/Vehicles/VehicleDetails";
 import { mockVehicles, Vehicle, VehicleStatus } from "@/data/mock-data";
 
 const Index = () => {
-  const [selectedFilters, setSelectedFilters] = useState<VehicleStatus[]>(['active', 'paused', 'delayed']);
+  const [selectedFilters, setSelectedFilters] = useState<VehicleStatus[]>(['active', 'paused', 'delayed', 'completed', 'maintenance']);
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
   const [detailsOpen, setDetailsOpen] = useState<boolean>(false);
 
@@ -17,12 +17,10 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-gray-100">
       <Header />
       
       <main className="flex-1 p-4 lg:p-6 container max-w-7xl mx-auto flex flex-col">
-        <h1 className="text-2xl font-bold mb-6">Delivery Fleet Dashboard</h1>
-        
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1">
           <div className="lg:col-span-1">
             <VehicleList 

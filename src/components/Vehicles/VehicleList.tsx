@@ -21,15 +21,23 @@ const VehicleList = ({
     ? vehicles.filter(vehicle => selectedFilters.includes(vehicle.status))
     : vehicles;
 
+  // Calculate counts for each status
+  const vehicleCounts: Record<VehicleStatus | 'all', number> = {
+    all: vehicles.length,
+    active: vehicles.filter(v => v.status === 'active').length,
+    paused: vehicles.filter(v => v.status === 'paused').length,
+    delayed: vehicles.filter(v => v.status === 'delayed').length,
+    completed: vehicles.filter(v => v.status === 'completed').length,
+    maintenance: vehicles.filter(v => v.status === 'maintenance').length,
+  };
+
   return (
     <div className="h-full flex flex-col">
-      <div className="mb-2">
-        <h2 className="text-lg font-semibold mb-2">Fleet Status</h2>
-        <VehicleFilter 
-          selectedFilters={selectedFilters} 
-          onFilterChange={onFilterChange} 
-        />
-      </div>
+      <VehicleFilter 
+        selectedFilters={selectedFilters} 
+        onFilterChange={onFilterChange}
+        vehicleCounts={vehicleCounts}
+      />
       
       <div className="overflow-y-auto flex-1 pr-2 -mr-2">
         <div className="space-y-3">
