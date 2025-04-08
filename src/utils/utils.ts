@@ -1,8 +1,7 @@
 import axios from "axios";
 
 export async function createVrp(
-  customers: { id: string; lat: number; long: number }[],
-  orders: { id: string; customerId: string }[]
+  customers: { id: string; lat: number; long: number }[]
 ) {
   const input = {
     costMetric: "time",
