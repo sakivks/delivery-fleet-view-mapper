@@ -1,6 +1,13 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { Vehicle, mapDbVehicleToAppVehicle } from "@/data/mock-data";
+import { Database } from "@/integrations/supabase/types";
+
+// Define types based on your database schema
+type DbVehicle = Database['public']['Tables']['vehicles']['Row'];
+type DbDriver = Database['public']['Tables']['drivers']['Row'];
+type DbTrip = Database['public']['Tables']['trips']['Row'];
+type DbOrderTrip = Database['public']['Tables']['order_trips']['Row'];
 
 export const fetchVehicles = async (): Promise<Vehicle[]> => {
   try {
