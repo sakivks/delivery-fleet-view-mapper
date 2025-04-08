@@ -16,8 +16,8 @@ export type Database = {
           email: string | null;
           id: string;
           name: string;
-          lat?: number | null ; 
-          long?: number | null ;
+          lat?: number | null;
+          long?: number | null;
           phone: string | null;
           updated_at: string;
         };
@@ -26,8 +26,8 @@ export type Database = {
           created_at?: string;
           email?: string | null;
           id?: string;
-          lat?: number | null ; 
-          long?: number | null ;
+          lat?: number | null;
+          long?: number | null;
           name: string;
           phone?: string | null;
           updated_at?: string;
@@ -37,8 +37,8 @@ export type Database = {
           created_at?: string;
           email?: string | null;
           id?: string;
-          lat?: number | null ; 
-          long?: number | null ;
+          lat?: number | null;
+          long?: number | null;
           name?: string;
           phone?: string | null;
           updated_at?: string;
@@ -285,16 +285,22 @@ export type Database = {
           created_at: string;
           id: string;
           event: string | null;
+          time: string | null;
+          sequence: number | null;
         };
         Insert: {
           created_at?: string;
           id?: string;
           event?: string | null;
+          time?: string | null;
+          sequence?: number | null;
         };
         Update: {
           created_at?: string;
           id?: string;
           event?: string | null;
+          time?: string | null;
+          sequence?: number | null;
         };
       };
       event_timeline: {
@@ -302,15 +308,19 @@ export type Database = {
           created_at: string;
           id: string;
           event: string | null;
+          timestamp: string | null;
         };
         Insert: {
           created_at?: string;
           id?: string;
           event?: string | null;
+          timestamp?: string | null;
         };
         Update: {
           created_at?: string;
           id?: string;
+          event?: string | null;
+          timestamp?: string | null;
         };
       };
     };
