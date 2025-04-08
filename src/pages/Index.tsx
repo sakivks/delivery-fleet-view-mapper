@@ -6,6 +6,7 @@ import VehicleDetails from "@/components/Vehicles/VehicleDetails";
 import { Vehicle, VehicleStatus, mockVehicles } from "@/data/mock-data";
 import { fetchVehicles } from "@/services/VehicleService";
 import { useToast } from "@/hooks/use-toast";
+import { getOrderTrips } from "@/services/orderService";
 
 const Index = () => {
   const [selectedFilters, setSelectedFilters] = useState<VehicleStatus[]>([
@@ -19,6 +20,7 @@ const Index = () => {
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
   const [detailsOpen, setDetailsOpen] = useState<boolean>(false);
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const [orderTrips, setOrderTrips] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const { toast } = useToast();
 
@@ -46,7 +48,18 @@ const Index = () => {
       }
     };
 
+    const loadOrderTrips = async () => {
+      try {
+        const trips = await getOrderTrips("tripId");
+        console.log("Order trips:", trips);
+        setOrderTrips(trips);
+      } catch (error) {
+        console.error("Failed to load order trips:", error);
+      }
+    };
+
     loadVehicles();
+    loadOrderTrips();
   }, [toast]);
 
   const handleSelectVehicle = (vehicle: Vehicle) => {
@@ -91,6 +104,11 @@ const Index = () => {
         vehicle={selectedVehicle}
         isOpen={detailsOpen}
         onClose={() => setDetailsOpen(false)}
+        customersETA={[
+          { id: "1", customer: "Customer A", sequence: 1, eta: "12:00 PM" },
+          { id: "2", customer: "Customer B", sequence: 2, eta: "12:30 PM" },
+          { id: "3", customer: "Customer C", sequence: 3, eta: "1:00 PM" },
+        ]}
       />
     </div>
   );
