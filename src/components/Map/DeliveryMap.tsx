@@ -9,6 +9,25 @@ interface DeliveryMapProps {
   onVehicleSelect: (vehicle: Vehicle) => void;
 }
 
+const mapOptions = {
+  styles: [
+    {
+      featureType: "poi",
+      elementType: "labels.icon",
+      stylers: [{ visibility: "off" }],
+    },
+    {
+      featureType: "poi.business",
+      stylers: [{ visibility: "off" }],
+    },
+    {
+      featureType: "transit",
+      stylers: [{ visibility: "off" }],
+    },
+  ],
+  disableDefaultUI: false, // or true if you want no controls at all
+};
+
 const DeliveryMap = ({
   vehicles,
   selectedVehicle,
@@ -37,6 +56,7 @@ const DeliveryMap = ({
             mapContainerStyle={containerStyle}
             center={center}
             zoom={12}
+            options={mapOptions}
           >
             <Marker position={center} />
           </GoogleMap>
