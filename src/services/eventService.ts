@@ -35,7 +35,7 @@ export class EventService {
       .insert([
         {
           event: eventName,
-          created_at: actualTimestamp.toISOString(),
+          timestamp: actualTimestamp.toISOString(),
         },
       ])
       .select();
@@ -85,7 +85,10 @@ export class EventService {
       .select("*")
       .order("created_at", { ascending: false });
 
-    if (error) throw error;
+    if (error) {
+      console.error("Error fetching notifications:", error);
+      throw error;
+    }
     return data;
   }
 
@@ -103,82 +106,127 @@ export class EventService {
 
   // Check for delayed events and create notifications
   static async checkForDelayedEvents() {
-    // Get all planned events ordered by sequence
-    const { data: plannedEvents, error: plannedError } = await supabase
-      .from("planned_schedule")
-      .select("*")
-      .order("sequence", { ascending: true });
+    try {
+      // Get all planned events ordered by sequence
+      const { data: plannedEvents, error: plannedError } = await supabase
+        .from("planned_schedule")
+        .select("*")
+        .order("sequence", { ascending: true });
 
-    if (plannedError) throw plannedError;
+      if (plannedError) throw plannedError;
 
-    // Get all actual events ordered by time
-    const { data: actualEvents, error: actualError } = await supabase
-      .from("event_timeline")
-      .select("*")
-      .order("created_at", { ascending: true });
+      // Get all actual events ordered by time
+      const { data: actualEvents, error: actualError } = await supabase
+        .from("event_timeline")
+        .select("*")
+        .order("timestamp", { ascending: true });
 
-    if (actualError) throw actualError;
+      if (actualError) throw actualError;
 
-    // Create a map of actual events by event name
-    const actualEventsMap = new Map(
-      actualEvents.map((event) => [event.event, event])
-    );
+      if (!actualEvents || actualEvents.length < 2) {
+        console.log("Not enough actual events to check for delays");
+        return;
+      }
+      // Create a map of actual events by event name
+      const actualEventsMap = new Map(
+        actualEvents.map((event) => [event.event, event])
+      );
 
-    // Check time gaps between consecutive events
-    for (let i = 0; i < plannedEvents.length - 1; i++) {
-      const currentPlanned = plannedEvents[i];
-      const nextPlanned = plannedEvents[i + 1];
+      // Check time gaps between consecutive events
+      for (let i = 0; i < plannedEvents.length - 1; i++) {
+        const currentPlanned = plannedEvents[i];
+        const nextPlanned = plannedEvents[i + 1];
 
-      const currentActual = actualEventsMap.get(currentPlanned.event);
-      const nextActual = actualEventsMap.get(nextPlanned.event);
+        const currentActual = actualEventsMap.get(currentPlanned.event);
+        const nextActual = actualEventsMap.get(nextPlanned.event);
 
-      if (currentActual && nextActual) {
-        const plannedTimeGap = nextPlanned.time; // in minutes
-        const actualTimeGap =
-          (new Date(nextActual.created_at).getTime() -
-            new Date(currentActual.created_at).getTime()) /
-          (1000 * 60); // in minutes
+        if (currentActual && nextActual) {
+          const plannedTimeGap = nextPlanned.time; // in minutes
+          const actualTimeGap =
+            (new Date(nextActual.timestamp).getTime() -
+              new Date(currentActual.timestamp).getTime()) /
+            (1000 * 60); // in minutes
 
-        if (actualTimeGap > plannedTimeGap) {
-          const delayDuration = Math.round(actualTimeGap - plannedTimeGap);
+          if (actualTimeGap > plannedTimeGap) {
+            const delayDuration = Math.round(actualTimeGap - plannedTimeGap);
 
-          // Create notification message
-          const message = `Time gap between "${currentPlanned.event}" and "${
-            nextPlanned.event
-          }" exceeded planned duration. Planned: ${plannedTimeGap} minutes, Actual: ${Math.round(
-            actualTimeGap
-          )} minutes (${delayDuration} minutes delay)`;
+            // Create notification message
+            const message = `Time gap between "${currentPlanned.event}" and "${
+              nextPlanned.event
+            }" exceeded planned duration. Planned: ${plannedTimeGap} minutes, Actual: ${Math.round(
+              actualTimeGap
+            )} minutes (${delayDuration} minutes delay)`;
 
-          // Check if notification already exists
-          const { data: existingNotification, error: notificationError } =
-            await supabase
-              .from("notification")
-              .select("*")
-              .eq(
-                "title",
-                `Delayed Event: ${currentPlanned.event} -> ${nextPlanned.event}`
-              )
-              .eq("read", false)
-              .limit(1);
+            // Check if notification already exists
+            const { data: existingNotification, error: notificationError } =
+              await supabase
+                .from("notification")
+                .select("*")
+                .eq(
+                  "title",
+                  `Delayed Event: ${currentPlanned.event} -> ${nextPlanned.event}`
+                )
+                .eq("read", false)
+                .limit(1);
 
-          if (notificationError) throw notificationError;
+            if (notificationError) throw notificationError;
 
-          // Create notification if it doesn't exist
-          if (!existingNotification || existingNotification.length === 0) {
-            const { error: insertError } = await supabase
-              .from("notification")
-              .insert([
-                {
-                  title: `Delayed Event: ${currentPlanned.event} -> ${nextPlanned.event}`,
-                  message: message,
-                  read: false,
-                },
-              ]);
+            // Create notification if it doesn't exist
+            if (!existingNotification || existingNotification.length === 0) {
+              const { data: newNotification, error: insertError } =
+                await supabase
+                  .from("notification")
+                  .insert([
+                    {
+                      title: `Delayed Event: ${currentPlanned.event} -> ${nextPlanned.event}`,
+                      message: message,
+                      read: false,
+                    },
+                  ])
+                  .select();
 
-            if (insertError) throw insertError;
+              if (insertError) {
+                console.error("Error creating notification:", insertError);
+                throw insertError;
+              }
+            } else {
+              console.log("Notification already exists");
+            }
           }
         }
       }
+    } catch (error) {
+      console.error("Error in checkForDelayedEvents:", error);
+      throw error;
     }
+  }
+
+  static async initializePlannedEvents() {
+    const events = [
+      { name: "GATE_IN", sequence: 1, time: 0 },
+      { name: "DOCK_IN", sequence: 2, time: 30 },
+      { name: "LOADING", sequence: 3, time: 120 },
+      { name: "DOCK_OUT", sequence: 4, time: 15 },
+      { name: "GATE_OUT", sequence: 5, time: 15 },
+    ];
+
+    // First, clear existing planned events
+    const { error: deleteError } = await supabase
+      .from("planned_schedule")
+      .delete()
+      .neq("id", 0); // Delete all records
+
+    if (deleteError) throw deleteError;
+
+    // Insert new planned events
+    for (const event of events) {
+      const { error: insertError } = await supabase
+        .from("planned_schedule")
+        .insert([event]);
+
+      if (insertError) throw insertError;
+    }
+
+    console.log("Planned events initialized successfully");
   }
 }
