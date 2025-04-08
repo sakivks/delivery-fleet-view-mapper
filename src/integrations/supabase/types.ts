@@ -256,12 +256,14 @@ export type Database = {
           read: boolean;
           title: string;
           updated_at: string;
+          message: string | null;
         };
         Insert: {
           created_at?: string;
           id?: string;
           read?: boolean;
           title: string;
+          message?: string | null;
         };
         Update: {
           created_at?: string;
@@ -269,6 +271,7 @@ export type Database = {
           read?: boolean;
           title?: string;
           updated_at?: string;
+          message?: string | null;
         };
       };
       planned_schedule: {
